@@ -1,64 +1,87 @@
 import { StatusCodes } from "http-status-codes"
-import { Account } from "~/models/accountModel"
-import { navigationModel } from "~/models/navigationModel"
+import { ChildNav, ParentNav } from "~/models/navigationModel"
 import ApiErr from "~/utils/ApiError"
 import { NAVIGATION as NAV } from "~/utils/appConst"
 import slugify from "~/utils/stringToSlug"
 
-const getAllNavigation = async (data) => {
-  const parentNavs = await ParentNav.find({}, { title: 1 })
-  const childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1 })
+const getAllNavigation = async () => {
+  let parentNavs = await ParentNav.find({}, { title: 1 })
+  let childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1 })
 
-  parentNavs = parentNavs._doc
-  childNavs = childNavs._doc
-
-  parentNavs = parentNavs.map((parent) => {
-    childNavs.forEach((child) => {
-      let childs = []
-      if (parent._id.toString() == child.parentNavId.toString()) {
-        childs.push(child)
-      }
-      return { ...parent, childs }
-    })
+  return parentNavs.map(parent => {
+    const childs = childNavs.filter(child => parent._id.toString() === child.parentNavId.toString());
+    return { ...parent._doc, childs }
   })
-
-  return parentNavs
 }
 
-const getNaigation = async (data) => {
-  let navs
-  if (type == PARENT) {
-    navs = ParentNav.find({}, { title: 1 })
+const getNavigationBySlug = async (slug) => {
+  const parentNav = await ParentNav.findOne({ slug }, { title: 1 })
+  if (!parentNav) {
+    throw new ApiErr(StatusCodes.NOT_FOUND,'Not found')
+  }
+  const childNavs = await ChildNav.find(
+    { parentNavId: parentNav._id.toString() },
+    { title: 1 }
+  )
+  if (!childNavs) {
+    throw new ApiErr(StatusCodes.NOT_FOUND,'Not found')
+  }
+  parentNav._doc.childs = childNavs
+  return parentNav
+}
+
+const addNavigation = async (data, creator) => {
+  let nav
+  if (data.type == NAV.PARENT) {
+    const { title } = data
+    //check navigation exists
+    const navExists = await ParentNav.exists({ title })
+    if (navExists) {
+      throw new ApiErr(StatusCodes.CONFLICT,'Navigation is exists!')
+    }
+
+    nav = new ParentNav({
+      title,
+      slug:slugify(title),
+      createdBy:creator
+    })
+
+    await nav.save()
   } else {
-    navs = ChildNav.find(
-      { parentNavId: data.parentNavId },
-      { title: 1, parentNavId: 1 }
-    )
+    const { title, parentNavId } = data
+    //check parentNavigation
+    const parentNavExist = await ParentNav.exists({_id:parentNavId})
+    if (!parentNavExist) {
+      throw new ApiErr(StatusCodes.NOT_FOUND, 'Not found parent navigation')
+    }
+    //check parentNavigation
+    const childNavExists = await ChildNav.exists({parentNavId,title})
+    if (childNavExists) {
+      throw new ApiErr(StatusCodes.CONFLICT, 'Navigation is exists')
+    }
+    nav = new ChildNav({title,parentNavId,createdBy:creator})
+    await nav.save()
   }
-  return navs
+  return nav
 }
 
-const addNavigation = async (data, accountId) => {
-  const account = await Account.findById(accountId)
-  if (!account) {
-    throw new ApiErr(StatusCodes.NOT_FOUND, "Add fail")
+const deleteNaigation = async (data) => {
+  const {type, navId} = data
+  let deleted
+  if (type == NAV.PARENT) {
+    deleted= await ParentNav.findByIdAndDelete(navId)
+  }else{
+    deleted= await ChildNav.findByIdAndDelete(navId)
   }
-
-  data.createdBy = account.fullName
-  data.slug = slugify(data.title)
-  console.log(data)
-  const newNav = await navigationModel.addNavigation({ data })
-  return newNav
+  if (!deleted) {
+      throw new ApiErr(StatusCodes.CONFLICT,'Delete fail')
+  }
+  return deleted
 }
-
-const updateNaigation = async (data) => {}
-
-const deleteNaigation = async (data) => {}
 
 export const navigationService = {
   getAllNavigation,
-  getNaigation,
+  getNavigationBySlug,
   addNavigation,
   deleteNaigation,
-  updateNaigation,
 }
