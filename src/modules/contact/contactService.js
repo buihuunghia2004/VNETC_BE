@@ -1,38 +1,48 @@
-import { sendMail } from "~/helper/mailer";
-import { Account } from "~/models/accountModel";
-import { Contact } from "~/models/contactModel"
-import { accountService } from "../account/accountService";
+import {sendMail} from "~/helper/mailer";
+import {Account} from "~/models/accountModel";
+import {Contact} from "~/models/contactModel"
+import {accountService} from "../account/accountService";
+import {Notification} from "~/models/NotificationModel";
 
 const sendMessage = async (data) => {
-    const contact = new Contact(data)
-    await contact.save()
+    const contact = new Contact(data);
+    await contact.save();
 
-    //send mail for accounts
-    setTimeout(async () => {
-        const accountList = await Account.find({}, { email: 1 })
-        accountList.forEach(async (account) => {
-            await sendMail(
-                account.email,
-                'email',
-                `<div>
+    // Gửi email và tạo thông báo cho tất cả tài khoản
+    setImmediate(async () => {
+        try {
+            const accountList = await Account.find({}, {email: 1});
+            const emailContent = `
+                <div>
                     <h1>name: ${contact.name}</h1><br/>
                     <h1>email: ${contact.email}</h1><br/>
                     <h1>phone: ${contact.phone}</h1><br/>
                     <h1>title: ${contact.title}</h1><br/>
                     <h1>content: ${contact.content}</h1><br/>
-                </div>`
-            )
-        });
-    }, 0);
+                </div>
+            `;
+            const sendEmailAndCreateNotification = async (account) => {
+                await sendMail(account.email, 'email', emailContent);
+                const notification = new Notification({
+                    user_id: account._id,
+                    message: `Đã gửi email đến ${contact.email}`
+                });
+                await notification.save();
+            };
+            await Promise.all(accountList.map(sendEmailAndCreateNotification));
+        } catch (error) {
+            console.error('Error sending emails or creating notifications:', error);
+        }
+    });
 
-    return contact
-}
+    return contact;
+};
 const getMessage = async (data) => {
-    const { page = 0, limit = 5, } = data
+    const {page = 0, limit = 5,} = data
     const messages = await Contact.find()
         .skip(page * limit)
         .limit(limit)
-        .sort({ createdAt: -1 })
+        .sort({createdAt: -1})
     return messages
 }
 const deleteMessage = async (data) => {
@@ -40,7 +50,7 @@ const deleteMessage = async (data) => {
         const result = await Contact.findByIdAndDelete(data)
         if (!result) throw new ApiErr(444, "Delete fail")
         return result
-    }catch (e) {
+    } catch (e) {
         throw e
     }
 }
