@@ -49,7 +49,7 @@ const createEmailContent = (contact) => `
 const createNotification = async (userId, contactEmail) => {
     const notification = new Notification({
         user_id: userId,
-        message: `Đã gửi email đến ${contactEmail}`
+        message: `${contactEmail} đã gửi thông tin của họ`
     });
     await notification.save();
 };
