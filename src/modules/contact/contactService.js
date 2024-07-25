@@ -5,37 +5,53 @@ import {accountService} from "../account/accountService";
 import {Notification} from "~/models/NotificationModel";
 
 const sendMessage = async (data) => {
+    const contact = await saveContact(data);
+    setImmediate(() => sendEmailsAndNotifications(contact));
+    return contact;
+};
+
+const saveContact = async (data) => {
     const contact = new Contact(data);
     await contact.save();
-
-    // Gửi email và tạo thông báo cho tất cả tài khoản
-    setImmediate(async () => {
-        try {
-            const accountList = await Account.find({}, {email: 1});
-            const emailContent = `
-                <div>
-                    <h1>name: ${contact.name}</h1><br/>
-                    <h1>email: ${contact.email}</h1><br/>
-                    <h1>phone: ${contact.phone}</h1><br/>
-                    <h1>title: ${contact.title}</h1><br/>
-                    <h1>content: ${contact.content}</h1><br/>
-                </div>
-            `;
-            const sendEmailAndCreateNotification = async (account) => {
-                await sendMail(account.email, 'email', emailContent);
-                const notification = new Notification({
-                    user_id: account._id,
-                    message: `Đã gửi email đến ${contact.email}`
-                });
-                await notification.save();
-            };
-            await Promise.all(accountList.map(sendEmailAndCreateNotification));
-        } catch (error) {
-            console.error('Error sending emails or creating notifications:', error);
-        }
-    });
-
     return contact;
+};
+
+const sendEmailsAndNotifications = async (contact) => {
+    try {
+        const accountList = await Account.find({}, {email: 1});
+        await Promise.all(accountList.map(account =>
+            sendEmailAndCreateNotification(account, contact)
+        ));
+    } catch (error) {
+        console.error('Error in sendEmailsAndNotifications:', error);
+    }
+};
+
+const sendEmailAndCreateNotification = async (account, contact) => {
+    try {
+        await sendMail(account.email, 'email', createEmailContent(contact));
+        await createNotification(account._id, contact.email);
+    } catch (error) {
+        console.error(`Error processing account ${account._id}:`, error);
+    }
+};
+
+const createEmailContent = (contact) => `
+    <div>
+        <h1>name: ${contact.name}</h1><br/>
+        <h1>email: ${contact.email}</h1><br/>
+        <h1>phone: ${contact.phone}</h1><br/>
+        <h1>title: ${contact.title}</h1><br/>
+        <h1>content: ${contact.content}</h1><br/>
+    </div>
+`;
+
+const createNotification = async (userId, contactEmail) => {
+    const notification = new Notification({
+        user_id: userId,
+        message: `Đã gửi email đến ${contactEmail}`
+    });
+    await notification.save();
 };
 const getMessage = async (data) => {
     const {page = 0, limit = 5,} = data
