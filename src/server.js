@@ -6,10 +6,10 @@ import mongoose from 'mongoose'
 import http from 'http'
 import {Server} from 'socket.io'
 import {env} from './config/environment'
-import {errorHandlingMiddleWare} from './middlewares/errorHandlingMiddleware'
 import initApis from './routes/api'
 import {setupSocketIO} from './modules/socketService'
 import {connectToDatabase} from './config/mongodb'
+import {errorHandlingMiddleWare} from "~/middlewares/errorHandlingMiddleWare";
 
 const app = express()
 const server = http.createServer(app)

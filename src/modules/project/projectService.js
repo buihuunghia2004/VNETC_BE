@@ -161,6 +161,44 @@ class ProjectService {
     //         throw e
     //     }
     // }
+    async searchProjects(searchTerm, page, limit) {
+        try {
+
+            const skip = (page - 1) * limit;
+            const searchQuery = {
+                $or: [
+                    { name: { $regex: searchTerm, $options: 'i' } },
+                    { summary: { $regex: searchTerm, $options: 'i' } }
+                ]
+            };
+            const [projects, totalCount] = await Promise.all([
+                Project.find(searchQuery)
+                    .skip(skip)
+                    .limit(limit)
+                    .sort({ createdAt: -1 })
+                    .lean(),
+                Project.countDocuments(searchQuery)
+            ]);
+            console.log("project", projects)
+            const projectIds = projects.map(item => item._id);
+            const projectDetails = await projectDetail.find({ projectId: { $in: projectIds } }).lean();
+
+            const fullProjectResults = projects.map(project => ({
+                ...project,
+                content: projectDetails.find(detail => detail.projectId.toString() === project._id.toString())?.content || null
+            }));
+
+            return {
+                results: fullProjectResults,
+                totalCount,
+                totalPages: Math.ceil(totalCount / limit),
+                currentPage: page
+            };
+        } catch (error) {
+            console.error("Error searching projects:", error);
+            throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error searching projects");
+        }
+    }
 }
 
 

@@ -34,7 +34,7 @@ const serviceSchema = new Schema({
     },
     serviceType: {
         type: Number,
-        enum: [0, 1, 2],
+        enum: [0, 1, 2,3],
         required: true
     }
 }, {timestamps: true})
