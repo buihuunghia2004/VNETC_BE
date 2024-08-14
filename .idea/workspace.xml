@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/news/newsService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/news/newsService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/project/projectController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/project/projectController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/project/projectService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/project/projectService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/projectRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/projectRoute.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +51,7 @@
     &quot;Node.js.ImageService.js.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/2024/ctydailuc/cong-ty-dai-luc&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/2024/Rectjs/ultimate-react-course/01-pure-react/start/pizza-menu&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -139,7 +143,9 @@
       <workItem from="1721892931328" duration="1617000" />
       <workItem from="1722222786191" duration="4000" />
       <workItem from="1722236675212" duration="674000" />
-      <workItem from="1722399927398" duration="683000" />
+      <workItem from="1722399927398" duration="2915000" />
+      <workItem from="1722412629202" duration="690000" />
+      <workItem from="1723602221641" duration="2561000" />
     </task>
     <servers />
   </component>

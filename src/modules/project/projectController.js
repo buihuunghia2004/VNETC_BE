@@ -3,6 +3,7 @@ import {SuccessRes} from "~/utils/SuccessRes";
 
 import projectService from "~/modules/project/projectService";
 import {Project} from "~/models/projectModel";
+import {newsService} from "~/modules/news/newsService";
 
 export const addProject = async (req, res, next) => {
     try {
@@ -60,11 +61,13 @@ export const getByTopViews = async (req, res, next) => {
         next(e)
     }
 }
-// export const getByFeatured = async (req, res, next) => {
-//     try {
-//         const result = await Service.getFeatured()
-//         SuccessRes(res, result, 'Get Featured Successs')
-//     } catch (e) {
-//         next(e)
-//     }
-// }
+
+export  const search = async (req,res,next) =>{
+    try {
+        const {data, page, limit} = req.query
+        const result = await projectService.searchProjects(data, page, limit)
+        SuccessRes(res, result, 'Get Project Successs')
+    } catch (e) {
+        next(e)
+    }
+}

@@ -167,24 +167,33 @@ const searchNews = async (searchTerm, page, limit) => {
         const skip = (page - 1) * limit;
         const searchQuery = {
             $or: [
-                {title: {$regex: searchTerm, $options: 'i'}},
-                {summary: {$regex: searchTerm, $options: 'i'}}
+                { title: { $regex: searchTerm, $options: 'i' } },
+                { summary: { $regex: searchTerm, $options: 'i' } }
             ]
         };
-        const [news, totalCount] = await Promise.all([News.find(searchQuery)
-            .skip(skip)
-            .limit(limit)
-            .sort({createdAt: -1}), News.countDocuments(searchQuery)]);
+
+        const [news, totalCount] = await Promise.all([
+            News.find(searchQuery)
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 })
+                .lean(),
+            News.countDocuments(searchQuery)
+        ]);
+
         const newsIds = news.map(item => item._id);
-        const newsDetails = await NewsDetail.find({newsId: {$in: newsIds}});
-        const fullNewsResults = news.map(newsItem => {
-            const detail = newsDetails.find(detail => detail.newsId.toString() === newsItem._id.toString());
-            return {
-                ...newsItem.toObject(), content: detail ? detail.content : null
-            };
-        });
+        const newsDetails = await NewsDetail.find({ newsId: { $in: newsIds } }).lean();
+
+        const fullNewsResults = news.map(newsItem => ({
+            ...newsItem,
+            content: newsDetails.find(detail => detail.newsId.toString() === newsItem._id.toString())?.content || null
+        }));
+
         return {
-            results: fullNewsResults, totalCount, totalPages: Math.ceil(totalCount / limit), currentPage: page
+            results: fullNewsResults,
+            totalCount,
+            totalPages: Math.ceil(totalCount / limit),
+            currentPage: page
         };
     } catch (error) {
         console.error("Error searching news:", error);
