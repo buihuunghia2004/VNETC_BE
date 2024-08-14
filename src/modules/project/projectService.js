@@ -179,7 +179,6 @@ class ProjectService {
                     .lean(),
                 Project.countDocuments(searchQuery)
             ]);
-            console.log("project", projects)
             const projectIds = projects.map(item => item._id);
             const projectDetails = await projectDetail.find({ projectId: { $in: projectIds } }).lean();
 
