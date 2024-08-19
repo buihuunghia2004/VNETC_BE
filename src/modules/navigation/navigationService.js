@@ -5,13 +5,25 @@ import {NAVIGATION as NAV} from "~/utils/appConst"
 import slugify from "~/utils/stringToSlug"
 
 const getAllNavigation = async () => {
-    let parentNavs = await ParentNav.find({}, {title: 1, slug: 1})
-    let childNavs = await ChildNav.find({}, {title: 1, parentNavId: 1, slug: 1})
-    return parentNavs.map((parent) => {
-        const childs = childNavs.filter((child) => parent._id.toString() === child.parentNavId.toString())
-        return {...parent._doc, childs}
-    })
-}
+    let parentNavs = await ParentNav.find({}, {title: 1, slug: 1});
+    let childNavs = await ChildNav.find({}, {title: 1, parentNavId: 1, slug: 1});
+
+    // Đệ quy izaBEST
+    const buildTree = (navItems, parentId) => {
+        return navItems
+            .filter(nav => nav.parentNavId.toString() === parentId.toString())
+            .map(nav => ({
+                ...nav._doc,
+                child: buildTree(navItems, nav._id)
+            }));
+    };
+
+    return parentNavs.map(parent => ({
+        ...parent._doc,
+        childs: buildTree(childNavs, parent._id)
+    }));
+};
+
 
 const getNavigationBySlug = async (slug) => {
     const parentNav = await ParentNav.findOne({slug}, {title: 1})
@@ -54,7 +66,7 @@ const addNavigation = async (data, creator) => {
         if (navExists) {
             throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists!");
         }
-
+        console.log("vaoday");
         const nav = new ParentNav({title, slug, createdBy: creator});
         return await nav.save();
     } else {
@@ -62,10 +74,9 @@ const addNavigation = async (data, creator) => {
             parentNavId,
             title
         })]);
-
-        if (!parentNavExist) {
-            throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found");
-        }
+        // if (!parentNavExist) {
+        //     throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found!");
+        // }
         if (childNavExists) {
             throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists");
         }
