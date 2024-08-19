@@ -85,13 +85,13 @@ const addNavigation = async (data, creator) => {
             ChildNav.exists({ parentNavId, title })
         ]);
 
-        if (!parentNavExists) {
-            throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found!");
-        }
-
-        if (childNavExists) {
-            throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists");
-        }
+        // if (!parentNavExists && childNavExists) {
+        //     throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found!");
+        // }
+        //
+        // if (childNavExists) {
+        //     throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists");
+        // }
 
         const nav = new ChildNav({ title, parentNavId, slug, createdBy: creator });
         return await nav.save();
