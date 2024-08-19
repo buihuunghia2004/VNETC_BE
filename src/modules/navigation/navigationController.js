@@ -47,7 +47,7 @@ const updateNavigation = async (req, res, next) => {
 }
 const deleteNavigation = async (req, res, next) => {
     try {
-        const deleted = await navigationService.deleteNaigation(req.body)
+        const deleted = await navigationService.deleteNavigation(req.body)
         SuccessRes(res, deleted, "Delete successful")
     } catch (error) {
         next(error)
