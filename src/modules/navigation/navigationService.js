@@ -150,6 +150,7 @@ const updateNavigation = async (id, data, updater) => {
 
 const deleteNavigation = async (data) => {
     const { type, id } = data;
+    console.log(id)
     const deleted = type === NAV.PARENT
         ? await ParentNav.findByIdAndDelete(id)
         : await ChildNav.findByIdAndDelete(id);
