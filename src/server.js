@@ -10,7 +10,7 @@ import initApis from './routes/api'
 import {setupSocketIO} from './modules/socketService'
 import {connectToDatabase} from './config/mongodb'
 import {errorHandlingMiddleWare} from "~/middlewares/errorHandlingMiddleWare";
-
+import path from 'path';
 const app = express()
 const server = http.createServer(app)
 export const io = new Server(server, {
@@ -26,6 +26,8 @@ app.use(express.json())
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan('dev'))
+// Thiết lập đường dẫn tĩnh cho thư mục 'uploads'
+app.use('/uploads', express.static(path.join(__dirname,'..', 'uploads')));
 
 // Database connection
 connectToDatabase()

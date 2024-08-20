@@ -15,6 +15,9 @@ import {ImageLibraryRoute} from "~/routes/ImageLibraryRoute";
 import {VideoLibraryRoute} from "~/routes/VideoLibraryRoute";
 import {PageRoute} from "~/routes/PageRoute";
 import {notiRoute} from "~/routes/notiRoute";
+import {documentRoute} from "~/routes/documentRoute";
+import express from "express";
+import path from "path";
 
 
 const initApis = (app) => {
@@ -35,6 +38,7 @@ const initApis = (app) => {
     app.use("/api/video", VideoLibraryRoute)
     app.use("/api/gioi-thieu", PageRoute)
     app.use("/api/notification", notiRoute)
+    app.use("/api/document", documentRoute)
 }
 
 export default initApis
