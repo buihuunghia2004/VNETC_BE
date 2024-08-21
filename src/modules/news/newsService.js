@@ -5,6 +5,7 @@ import {body} from "express-validator";
 import {log} from "console";
 import ApiErr from "~/utils/ApiError";
 import {StatusCodes} from "http-status-codes";
+import {io} from "~/server";
 
 const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")
@@ -41,11 +42,15 @@ const createNews = async ({title, summary, views, categoryId, content, isFeature
         await news.save();
         await newsDetail.save();
 
+        // Bắn socket cho client khi thêm tin tức mới
+        io.emit('newsAdded', news);
+
         return news;
     } catch (error) {
-        throw error
+        throw error;
     }
 };
+
 
 
 const createNewsDetail = async (data, account) => {

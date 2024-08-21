@@ -7,8 +7,7 @@ const addNews = async (req, res, next) => {
     try {
         const {body: data, file: image, account} = req
         const added = await newsService.createNews(data, image, account)
-        // Gửi thông báo cho tất cả client về bài viết mới
-        io.emit('news', { message: '1 bài viết mới đã được thêm', news: added });
+
         SuccessRes(res, added, 'Add news succesfull')
     } catch (error) {
         next(error)
