@@ -29,7 +29,7 @@ const DocumentSchema = new Schema({
     },
     type: {
         type: Number,
-        enum: [0,1,2],
+        enum: [0,1,2,3],
         required: true
     },
     createdBy: {
@@ -41,7 +41,7 @@ const DocumentSchema = new Schema({
         default: null
     },
     attachments: {
-        type: String,
+        type: [AttachmentSchema],
         required: true
     }
 },{ timestamps: true });

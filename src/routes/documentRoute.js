@@ -8,15 +8,16 @@ import {
     updateDocument,
     deleteDocument
 } from "~/modules/Documents/documentController";
+import {upload} from "~/middlewares/multipleUploadMiddleware";
 
 const Document = express.Router();
 
 Document.route('/')
-    .post(isAuth, multerUpload.single('file'), addDocument) // Thêm tài liệu
+    .post(multerUpload.array('file'), addDocument) // Thêm tài liệu
     .get(getDocument); // Lấy danh sách tài liệu
 
 Document.route('/:id')
-    .patch(isAuth, multerUpload.single('file'), updateDocument)
+    .patch(isAuth, multerUpload.array('file'), updateDocument)
     .get(getDocumentById) // Lấy tài liệu theo ID
     .delete(isAuth, deleteDocument); // Xóa tài liệu theo ID
 

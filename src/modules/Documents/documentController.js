@@ -3,8 +3,8 @@ import documentService from "~/modules/Documents/documentService";
 
 export const addDocument = async (req, res, next) => {
     try {
-        const {body: data, file} = req;
-        const result = await documentService.addDoc(data, file);
+        const {body: data, files} = req;
+        const result = await documentService.addDoc(data, files);
         SuccessRes(res, result, 'Add Document Success');
     } catch (error) {
         next(error);
@@ -33,8 +33,8 @@ export const getDocumentById = async (req, res, next) => {
 export const updateDocument = async (req, res, next) => {
     try {
         const {id} = req.params;
-        const {body: data, file} = req;
-        const result = await documentService.updateDoc(id, data, file);
+        const {body: data, files} = req;
+        const result = await documentService.updateDoc(id, data, files);
         SuccessRes(res, result, 'Update Document Success');
     } catch (error) {
         next(error);
