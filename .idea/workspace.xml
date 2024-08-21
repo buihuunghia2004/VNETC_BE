@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/middlewares/multerPDFhandle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/documentModel.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/Documents/documentController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/modules/Documents/documentService.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/routes/documentRoute.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/uploadSingleImage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/uploadSingleImage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/news/newsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/news/newsController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/news/newsService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/news/newsService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,6 +185,11 @@
           <url>file://$PROJECT_DIR$/src/models/documentModel.js</url>
           <line>46</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/modules/news/newsService.js</url>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
