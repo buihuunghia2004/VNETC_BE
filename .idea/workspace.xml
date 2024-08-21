@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/news/newsController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/news/newsController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/news/newsService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/news/newsService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/Documents/documentService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/Documents/documentService.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +187,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/modules/news/newsService.js</url>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
