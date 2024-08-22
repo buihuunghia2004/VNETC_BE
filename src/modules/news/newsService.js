@@ -1,5 +1,3 @@
-import {accountService as news, accountService} from "../account/accountService";
-
 import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
 import {body} from "express-validator";
 import {log} from "console";
@@ -11,7 +9,7 @@ const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")
 
 const findAllNews = async (data) => {
-    const { page = 1, limit = 10, categoryId, startDate, endDate } = data;
+    const {page = 1, limit = 10, categoryId, startDate, endDate} = data;
 
     let query = {};
 
@@ -35,7 +33,7 @@ const findAllNews = async (data) => {
         News.find(query)
             .skip(skip)
             .limit(parseInt(limit))
-            .sort({ createdAt: -1 }),
+            .sort({createdAt: -1}),
         News.countDocuments(query)
     ]);
 
@@ -75,7 +73,6 @@ const createNews = async ({title, summary, views, categoryId, content, isFeature
         throw error;
     }
 };
-
 
 
 const createNewsDetail = async (data, account) => {
@@ -197,8 +194,8 @@ const searchNews = async (searchTerm, page, limit, startDate, endDate) => {
         const skip = (page - 1) * limit;
         let searchQuery = {
             $or: [
-                { title: { $regex: searchTerm, $options: 'i' } },
-                { summary: { $regex: searchTerm, $options: 'i' } }
+                {title: {$regex: searchTerm, $options: 'i'}},
+                {summary: {$regex: searchTerm, $options: 'i'}}
             ]
         };
 
@@ -209,21 +206,21 @@ const searchNews = async (searchTerm, page, limit, startDate, endDate) => {
                 $lte: new Date(endDate)
             };
         } else if (startDate) {
-            searchQuery.createdAt = { $gte: new Date(startDate) };
+            searchQuery.createdAt = {$gte: new Date(startDate)};
         } else if (endDate) {
-            searchQuery.createdAt = { $lte: new Date(endDate) };
+            searchQuery.createdAt = {$lte: new Date(endDate)};
         }
         const [news, totalCount] = await Promise.all([
             News.find(searchQuery)
                 .skip(skip)
                 .limit(limit)
-                .sort({ createdAt: -1 })
+                .sort({createdAt: -1})
                 .lean(),
             News.countDocuments(searchQuery)
         ]);
 
         const newsIds = news.map(item => item._id);
-        const newsDetails = await NewsDetail.find({ newsId: { $in: newsIds } }).lean();
+        const newsDetails = await NewsDetail.find({newsId: {$in: newsIds}}).lean();
 
         const fullNewsResults = news.map(newsItem => ({
             ...newsItem,

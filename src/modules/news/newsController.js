@@ -27,7 +27,6 @@ const getNews = async (req, res, next) => {
     try {
         const { page, limit, categoryId, startDate, endDate } = req.query;
 
-        // Validate date inputs
         if (startDate && !isValidDate(startDate)) {
             return next(new ApiErr(StatusCodes.BAD_REQUEST, "Invalid start date format"));
         }
