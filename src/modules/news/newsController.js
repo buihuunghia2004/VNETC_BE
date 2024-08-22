@@ -1,4 +1,6 @@
 import {newsService} from "./newsService"
+import ApiErr from "~/utils/ApiError";
+import {StatusCodes} from "http-status-codes";
 
 const {newsModel} = require("~/models/newsModel")
 const {SuccessRes} = require("~/utils/SuccessRes")
@@ -21,15 +23,37 @@ const addNewsDetail = async (req, res, next) => {
         next(error)
     }
 }
-
 const getNews = async (req, res, next) => {
     try {
-        const getNews = await newsService.findAllNews(req.query)
-        SuccessRes(res, getNews, 'get news successful')
+        const { page, limit, categoryId, startDate, endDate } = req.query;
+
+        // Validate date inputs
+        if (startDate && !isValidDate(startDate)) {
+            return next(new ApiErr(StatusCodes.BAD_REQUEST, "Invalid start date format"));
+        }
+        if (endDate && !isValidDate(endDate)) {
+            return next(new ApiErr(StatusCodes.BAD_REQUEST, "Invalid end date format"));
+        }
+
+        const result = await newsService.findAllNews({
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
+            categoryId,
+            startDate,
+            endDate
+        });
+
+        SuccessRes(res, result, 'Get news successful');
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
+
+// Hàm helper để kiểm tra tính hợp lệ của ngày
+const isValidDate = (dateString) => {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+};
 const getNewsbyid = async (req, res, next) => {
     try {
         const getNews = await newsService.getNewsByNId(req.params.id)

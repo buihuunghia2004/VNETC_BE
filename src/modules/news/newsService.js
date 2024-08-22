@@ -11,16 +11,41 @@ const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")
 
 const findAllNews = async (data) => {
-    const {page, limit, categoryId} = data
-    // const {page, limit} = data
-    const query = categoryId ? {categoryId} : {};
-    const news = await News.find(query)
-        .skip(limit * (page - 1))
-        .limit(limit)
-        .sort({createdAt: -1});
+    const { page = 1, limit = 10, categoryId, startDate, endDate } = data;
 
-    return news
-}
+    let query = {};
+
+    if (categoryId) {
+        query.categoryId = categoryId;
+    }
+
+    if (startDate || endDate) {
+        query.createdAt = {};
+        if (startDate) {
+            query.createdAt.$gte = new Date(startDate);
+        }
+        if (endDate) {
+            query.createdAt.$lte = new Date(endDate);
+        }
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [news, totalCount] = await Promise.all([
+        News.find(query)
+            .skip(skip)
+            .limit(parseInt(limit))
+            .sort({ createdAt: -1 }),
+        News.countDocuments(query)
+    ]);
+
+    return {
+        news,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / limit),
+        totalCount
+    };
+};
 const createNews = async ({title, summary, views, categoryId, content, isFeatured}, image, account) => {
     try {
         const uploadImage = await uploadSingleImageToCloudinary(image.path);
@@ -167,16 +192,27 @@ const getFeatured = async () => {
         throw e
     }
 }
-const searchNews = async (searchTerm, page, limit) => {
+const searchNews = async (searchTerm, page, limit, startDate, endDate) => {
     try {
         const skip = (page - 1) * limit;
-        const searchQuery = {
+        let searchQuery = {
             $or: [
                 { title: { $regex: searchTerm, $options: 'i' } },
                 { summary: { $regex: searchTerm, $options: 'i' } }
             ]
         };
 
+        // Thêm điều kiện lọc theo khoảng thời gian nếu có
+        if (startDate && endDate) {
+            searchQuery.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            };
+        } else if (startDate) {
+            searchQuery.createdAt = { $gte: new Date(startDate) };
+        } else if (endDate) {
+            searchQuery.createdAt = { $lte: new Date(endDate) };
+        }
         const [news, totalCount] = await Promise.all([
             News.find(searchQuery)
                 .skip(skip)
