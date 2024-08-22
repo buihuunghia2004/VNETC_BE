@@ -14,7 +14,7 @@ class SerService {
             await service.save();
 
             const newOrder = new ServiceDetailModel({
-                serviceId: service._id,
+                categoryId: service._id,
                 content: data.content,
                 createdBy: data.createdBy
             });
@@ -26,9 +26,11 @@ class SerService {
         }
     }
 
-    async getService({page, limit, type}) {
+    async getService({page, limit, categories}) {
         try {
-            const query = type ? {serviceType: type} : {};
+
+            const query = categories ? {categoryId: categories} : {};
+            console.log(query)
             const service = await ServiceModel.find(query).skip(limit * (page - 1)).limit(limit).sort({createdAt: -1})
             return service
         } catch (e) {

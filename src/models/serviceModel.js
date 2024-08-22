@@ -32,9 +32,8 @@ const serviceSchema = new Schema({
         type: String,
         default: null
     },
-    serviceType: {
-        type: Number,
-        enum: [0, 1, 2,3],
+    categoryId : {
+        type: String,
         required: true
     }
 }, {timestamps: true})
