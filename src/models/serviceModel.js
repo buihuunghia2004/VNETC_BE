@@ -32,10 +32,11 @@ const serviceSchema = new Schema({
         type: String,
         default: null
     },
-    categoryId : {
-        type: String,
-        required: true
-    }
+    categoryId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category'
+    },
 }, {timestamps: true})
 
 export const ServiceModel = mongoose.model('Service', serviceSchema)
