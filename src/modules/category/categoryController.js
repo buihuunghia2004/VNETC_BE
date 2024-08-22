@@ -15,7 +15,7 @@ const addCategory = async (req, res, next) => {
 }
 const getCates = async (req, res, next) => {
     try {
-        const cates = await categoryService.getCates()
+        const cates = await categoryService.getCategories()
         SuccessRes(res, cates, 'Get categories successful')
     } catch (error) {
         next(error)
@@ -24,7 +24,7 @@ const getCates = async (req, res, next) => {
 const getByType = async (req, res, next) => {
     try {
         const {value} = req.query
-        const result = await categoryService.getByType(value)
+        const result = await categoryService.getCategoriesByType(value)
         SuccessRes(res, result, 'Get categories successful')
     }catch (e) {
         next(e)
