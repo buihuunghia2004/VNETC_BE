@@ -26,15 +26,27 @@ class SerService {
         }
     }
 
-    async getService({page, limit, categories}) {
+    async getService({ page, limit, categoryId }) {
         try {
+            // Kiểm tra và thiết lập giá trị mặc định cho page và limit
+            const validPage = Math.max(1, parseInt(page) || 1); // Đảm bảo page >= 1
+            const validLimit = Math.max(1, parseInt(limit) || 10); // Đảm bảo limit >= 1
 
-            const query = categories ? {categoryId: categories} : {};
-            console.log(query)
-            const service = await ServiceModel.find(query).skip(limit * (page - 1)).limit(limit).sort({createdAt: -1})
-            return service
+            const query = categoryId ? { categoryId } : {};
+            const service = await ServiceModel.find(query)
+                .skip(validLimit * (validPage - 1))
+                .limit(validLimit)
+                .sort({ createdAt: -1 });
+
+            // Kiểm tra nếu không có kết quả
+            if (service.length === 0) {
+                return { message: "No services found" };
+            }
+
+            return service;
         } catch (e) {
-            throw e
+            console.error("Error fetching services:", e.message); // Ghi log lỗi
+            throw new Error("An error occurred while fetching services"); // Thông báo lỗi cụ thể hơn
         }
     }
 
