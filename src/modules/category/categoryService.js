@@ -2,29 +2,32 @@ import { Category } from "~/models/categoryModel"
 import { News } from "~/models/newsModel"
 import slugify from "~/utils/stringToSlug"
 import ApiErr from "~/utils/ApiError"
+import mongoose from "mongoose";
 
-const addCategory = async ({ name, type, subcategories }, profile) => {
-    try {
-        if (await Category.exists({ name })) {
-            throw new ApiErr(444, "Category already exists")
-        }
+const addCategory = async (data, profile) => {
+    const { name, type, subcategories } = data
+    const slug = slugify(name)
 
-        const category = new Category({
-            name,
-            slug: slugify(name),
-            type,
-            createdBy: profile,
-            subcategories: subcategories.map(subName => ({
-                name: subName,
-                slug: slugify(subName)
-            }))
-        })
-
-        return await category.save()
-    } catch (error) {
-        if (error instanceof ApiErr) throw error
-        throw new ApiErr(500, "Error adding category: " + error.message)
+    const cateExists = await Category.exists({ name })
+    if (cateExists) {
+        throw new ApiErr(444, "Category already exists")
     }
+
+    const category = new Category({
+        _id: new mongoose.Types.ObjectId(),
+        name,
+        slug,
+        type,
+        createdBy: profile,
+        subcategories: subcategories.map(subName => ({
+            _id: new mongoose.Types.ObjectId(),
+            name: subName,
+            slug: slugify(subName)
+        }))
+    })
+
+    await category.save()
+    return category
 }
 
 const deleteCategory = async (id) => {
