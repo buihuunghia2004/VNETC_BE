@@ -24,7 +24,7 @@ export const getService = async (req, res, next) => {
 export const getServiceById = async (req, res, next) => {
     try {
         const id = req.params.id
-        const result = await Service.getServiceById(id)
+        const result = await Service.getServiceById(id);
         SuccessRes(res, result, "Get Service by id success")
     } catch (e) {
         next(e)
