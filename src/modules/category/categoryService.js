@@ -65,15 +65,16 @@ const getCategoriesByType = async (type) => {
     }
 }
 
-const updateCategory = async ({ id, name, updatedBy, subcategories }) => {
+const updateCategory = async (id,{  name, updatedBy, subcategories }, profile) => {
     try {
         const updated = await Category.findByIdAndUpdate(
             id,
             {
                 name,
                 slug: slugify(name),
-                updatedBy,
+                updatedBy: profile,
                 subcategories: subcategories.map(subName => ({
+                    _id: new mongoose.Types.ObjectId(),
                     name: subName,
                     slug: slugify(subName)
                 }))

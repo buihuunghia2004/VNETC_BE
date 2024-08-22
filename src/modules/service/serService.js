@@ -14,7 +14,7 @@ class SerService {
             await service.save();
 
             const newOrder = new ServiceDetailModel({
-                categoryId: service._id,
+                serviceId: service._id,
                 content: data.content,
                 createdBy: data.createdBy
             });

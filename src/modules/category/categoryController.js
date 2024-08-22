@@ -21,6 +21,17 @@ const getCates = async (req, res, next) => {
         next(error)
     }
 }
+const updateCate = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const data = req.body
+        const profile = req.account
+        const result = await categoryService.updateCategory(id,data,profile)
+        SuccessRes(res, result, 'Update Categories Successfully')
+    }catch (error) {
+        next(error)
+    }
+}
 const getByType = async (req, res, next) => {
     try {
         const {value} = req.query
@@ -32,7 +43,7 @@ const getByType = async (req, res, next) => {
 }
 const deleteCate = async (req, res, next) => {
     try {
-        const deleted = await categoryService.deleteCate(req.params.id)
+        const deleted = await categoryService.deleteCategory(req.params.id)
         SuccessRes(res,deleted,'Deleted successful')
     } catch (error) {
         next(error)
@@ -44,4 +55,5 @@ export const categoryController = {
     getCates,
     deleteCate,
     getByType,
+    updateCate
 }
