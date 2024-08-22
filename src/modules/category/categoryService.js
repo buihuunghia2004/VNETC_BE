@@ -19,11 +19,11 @@ const addCategory = async (data, profile) => {
         slug,
         type,
         createdBy: profile,
-        subcategories: subcategories.map(subName => ({
+        subcategories: subcategories ? subcategories.map(subName => ({
             _id: new mongoose.Types.ObjectId(),
             name: subName,
             slug: slugify(subName)
-        }))
+        })) : [] // Nếu subcategories không co', gán []
     })
 
     await category.save()
