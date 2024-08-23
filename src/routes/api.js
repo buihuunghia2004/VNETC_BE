@@ -18,6 +18,7 @@ import {notiRoute} from "~/routes/notiRoute";
 import {documentRoute} from "~/routes/documentRoute";
 import express from "express";
 import path from "path";
+import {actionRoute} from "~/routes/ActionRoute";
 
 
 const initApis = (app) => {
@@ -39,6 +40,7 @@ const initApis = (app) => {
     app.use("/api/gioi-thieu", PageRoute)
     app.use("/api/notification", notiRoute)
     app.use("/api/document", documentRoute)
+    app.use("/api/action", actionRoute)
 }
 
 export default initApis
