@@ -11,7 +11,7 @@ const memberSchema = new Schema({
     },
     position: {
         type: Number,
-        enum: [0, 1],
+        enum: [0, 1, 2],
         default: 1,
         required: true
     },
