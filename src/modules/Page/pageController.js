@@ -3,9 +3,8 @@ import pageService from "~/modules/Page/pageService";
 
 export const addPage = async (req, res, next) => {
     try {
-        const {body: data, account} = req
-        console.log(req)
-        const result = await pageService.addPageService(data, account)
+        const {body: data, account, file} = req
+        const result = await pageService.addPageService(data, account, file)
         SuccessRes(res, result, "Create Page success")
     } catch (error) {
         next(error)
@@ -40,8 +39,8 @@ export const deletePage = async (req, res, next) => {
 export const updatePage = async (req, res, next) => {
     try {
         const {slug} = req.params;
-        const {body: data, account} = req;
-        const result = await pageService.updatePage(slug, data, account);
+        const {body: data, account, file} = req;
+        const result = await pageService.updatePage(slug, data, account, file);
         SuccessRes(res, result, "Update Page Success");
     } catch (e) {
         next(e);

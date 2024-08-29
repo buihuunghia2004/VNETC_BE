@@ -2,8 +2,10 @@ import ApiErr from "~/utils/ApiError";
 import {StatusCodes} from "http-status-codes";
 import {DocumentModel} from "~/models/documentModel";
 import fs from 'fs';
-import { promisify } from 'util';
+import {promisify} from 'util';
+
 const unlinkAsync = promisify(fs.unlink)
+
 class docService {
     async addDoc(data, files) {
         const attachments = files.map(file => {
@@ -13,7 +15,7 @@ class docService {
             } else if (file.mimetype.startsWith('image/')) {
                 fileType = 'img';
             } else {
-                fileType = 'other'; // Nếu có loại file khác không xác định
+                fileType = 'other';
             }
 
             return {
@@ -35,7 +37,7 @@ class docService {
     }
 
     async getDoc(data) {
-        const { page, limit, type } = data;
+        const {page, limit, type} = data;
         const query = {};
 
         if (type) {
@@ -45,7 +47,7 @@ class docService {
         const docs = await DocumentModel.find(query)
             .skip(limit * (page - 1))
             .limit(limit)
-            .sort({ createdAt: -1 });
+            .sort({createdAt: -1});
 
         return docs;
     }
@@ -65,15 +67,11 @@ class docService {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Document not found");
         }
 
-        // Update the document data
         Object.assign(doc, data);
 
-        // Handle new file attachments
         if (files && files.length > 0) {
-            // Create a map to keep track of the updated attachments
             const updatedAttachmentsMap = new Map();
 
-            // Update or add new attachments
             await Promise.all(
                 files.map(async (file) => {
                     let fileType;
@@ -91,16 +89,13 @@ class docService {
                         file_url: file.path,
                     };
 
-                    // Check if the attachment already exists
                     const existingAttachment = doc.attachments.find((a) =>
                         a.file_type === fileType && a.filename === attachment.filename
                     );
 
                     if (existingAttachment) {
-                        // Update the existing attachment
                         Object.assign(existingAttachment, attachment);
                     } else {
-                        // Add a new attachment
                         doc.attachments.push(attachment);
                     }
 
@@ -108,7 +103,6 @@ class docService {
                 })
             );
 
-            // Remove the attachments that are not in the updatedAttachmentsMap
             doc.attachments = doc.attachments.filter((attachment) =>
                 updatedAttachmentsMap.has(`${attachment.file_type}:${attachment.filename}`)
             ).map((attachment) => updatedAttachmentsMap.get(`${attachment.file_type}:${attachment.filename}`));
@@ -118,6 +112,7 @@ class docService {
         await doc.save();
         return doc;
     }
+
     async deleteDoc(id) {
         const doc = await DocumentModel.findByIdAndDelete(id);
 
@@ -136,7 +131,7 @@ class docService {
 
         await Promise.all(deleteFilesPromises);
 
-        return { message: "Document and attached files deleted successfully" };
+        return {message: "Document and attached files deleted successfully"};
     }
 }
 

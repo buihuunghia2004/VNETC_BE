@@ -7,7 +7,7 @@ import {multerUpload} from "~/middlewares/multerPDFhandle";
 const Page = Router();
 Page.post("/", isAuth, multerUpload.single('file'), addPage)
 Page.get("/", getPage)
-Page.patch("/:slug", isAuth, updatePage)
+Page.patch("/:slug", isAuth,isAuth, multerUpload.single('file'), updatePage)
 Page.get("/:slug", getBySlug)
 Page.delete("/:slug", isAuth, deletePage)
 export const PageRoute = Page;

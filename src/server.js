@@ -27,8 +27,25 @@ app.use(cors({credentials:true}))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
 // Thiết lập đường dẫn tĩnh cho thư mục 'uploads'
-app.use('/uploads', express.static(path.join(__dirname,'..', 'uploads')));
+// const uploadPath = path.join(__dirname, '..', 'uploads');
+//
+// const serveUploads = (req, res, next) => {
+//     try {
+//         const filePath = path.join(uploadPath, req.path);
+//         // Kiểm tra xem tệp có tồn tại không
+//         if (fs.existsSync(filePath)) {
+//             express.static(uploadPath)(req, res, next);
+//         } else {
+//             // Nếu không tìm thấy tệp, gửi lại đường dẫn uploadPath
+//             res.status(404).send(`File not found. Upload directory: ${uploadPath}`);
+//         }
+//     } catch (error) {
+//         // Xử lý lỗi khác
+//         next(error);
+//     }
+// };
 
+app.use('/uploads', express.static(path.join(__dirname,'..', 'uploads')));
 // Database connection
 connectToDatabase()
 
