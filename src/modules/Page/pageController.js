@@ -4,6 +4,7 @@ import pageService from "~/modules/Page/pageService";
 export const addPage = async (req, res, next) => {
     try {
         const {body: data, account} = req
+        console.log(req)
         const result = await pageService.addPageService(data, account)
         SuccessRes(res, result, "Create Page success")
     } catch (error) {

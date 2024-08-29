@@ -15,6 +15,10 @@ const PageSchema = new Schema({
         type: String,
         require: true
     },
+    attachments:{
+        type: String,
+        default: ''
+    },
     createdBy: {
         type: String,
         require: true
