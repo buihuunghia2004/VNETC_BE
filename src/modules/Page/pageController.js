@@ -12,7 +12,7 @@ export const addPage = async (req, res, next) => {
 }
 export const getPage = async (req, res, next) => {
     try {
-        const result = await pageService.getPage()
+        const result = await pageService.getPages()
         SuccessRes(res, result, "Get Page success")
     } catch (error) {
         next(error)

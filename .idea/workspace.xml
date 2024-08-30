@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Changes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Changes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/Documents/documentService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/Documents/documentService.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modules/Page/pageController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/Page/pageController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/Page/pageService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/Page/pageService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/PageRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/PageRoute.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/1724408239337-VanBanGoc_33.2015.TT.BCT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/1724408239344-Screenshot 2024-08-22 091947.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/1724408511301-Screenshot 2024-08-22 092419.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/1724408511304-TT 39_2015_BCT_18.11.2015_QUY DINH HE THONG DIEN PHAN PHOI (thay the TT 32_2010).pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/1724900491629-QCVNBCT .jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/1724900491633-QCVN QTD 5_2009_BTC.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/1724900525808-QCVN QTD 5_2009_BTC.PDF" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,25 +42,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Node.js.ImageService.js.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;deploy&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.13.1&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.13.0&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/2024/Rectjs/ultimate-react-course/01-pure-react/start/pizza-menu&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\Game\\WebStorm 2024.1.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Node.js.ImageService.js.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "javascript.nodejs.core.library.configured.version": "20.13.1",
+    "javascript.nodejs.core.library.typings.version": "20.13.0",
+    "last_opened_file_path": "D:/2024/Rectjs/ultimate-react-course/01-pure-react/start/pizza-menu",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.dev.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "D:\\Game\\WebStorm 2024.1.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\2024\Rectjs\VNETC_BE\src\modules" />
