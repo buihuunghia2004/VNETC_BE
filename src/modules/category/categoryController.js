@@ -41,6 +41,16 @@ const getByType = async (req, res, next) => {
         next(e)
     }
 }
+const getCateById = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        console.log(id)
+        const category = await categoryService.getCategoryById(id);
+        SuccessRes(res, category, 'Get category successful');
+    } catch (error) {
+        next(error);
+    }
+};
 const deleteCate = async (req, res, next) => {
     try {
         const deleted = await categoryService.deleteCategory(req.params.id)
@@ -55,5 +65,6 @@ export const categoryController = {
     getCates,
     deleteCate,
     getByType,
-    updateCate
+    updateCate,
+    getCateById
 }

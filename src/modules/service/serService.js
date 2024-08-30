@@ -129,14 +129,7 @@ class SerService {
                 throw new ApiErr(StatusCodes.BAD_REQUEST, "Service details not found");
             }
             const data = {
-                _id: service._id,
-                name: service.name,
-                views: service.views,
-                createdBy: service.createdBy,
-                updatedBy: service.updatedBy,
-                image: service.image,
-                createdAt: service.createdAt,
-                updatedAt: service.updatedAt,
+                ...service,
                 content: serviceDetails.content // Ensure content is included
             };
             return data;

@@ -111,23 +111,33 @@ const getNewsByNId = async (newsId) => {
 
 const updateNews = async (id, data, file, account) => {
     try {
-        const {content} = data;
+        const { content } = data;
 
-        const uploadImage = file ? await uploadSingleImageToCloudinary(file.path) : null;
-        const images = uploadImage ? uploadImage.secure_url : null;
+        // Tải hình ảnh lên nếu có file
+        let images = null;
+        if (file) {
+            const uploadImage = await uploadSingleImageToCloudinary(file.path);
+            images = uploadImage ? uploadImage.secure_url : null;
+        }
 
-        const [updatedNews, updatedNewsDetail] = await Promise.all([News.findByIdAndUpdate({_id: id}, {
-            $set: {
-                ...data,
-                images,
-                updatedBy: account.username
-            }
-        }, {new: true}), NewsDetail.findOneAndUpdate({newsId: id}, {
-            $set: {
-                content,
-                updatedBy: account.username
-            }
-        }, {new: true}),]);
+        // Cập nhật thông tin của News
+        const updateFields = {
+            ...data,
+            updatedBy: account.username
+        };
+        if (images) {
+            updateFields.images = images;
+        }
+
+        const [updatedNews, updatedNewsDetail] = await Promise.all([
+            News.findByIdAndUpdate(id, { $set: updateFields }, { new: true }),
+            NewsDetail.findOneAndUpdate({ newsId: id }, {
+                $set: {
+                    content,
+                    updatedBy: account.username
+                }
+            }, { new: true })
+        ]);
 
         if (!updatedNews) {
             throw new Error('News not found');
@@ -137,11 +147,12 @@ const updateNews = async (id, data, file, account) => {
             throw new Error('NewsDetail not found');
         }
 
-        return {updatedNews, updatedNewsDetail};
+        return { updatedNews, updatedNewsDetail };
     } catch (err) {
         throw new Error(`Error updating news: ${err.message}`);
     }
 };
+
 
 
 const updateNewsDetail = async (data) => {

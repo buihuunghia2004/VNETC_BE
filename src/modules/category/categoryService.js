@@ -64,7 +64,23 @@ const getCategoriesByType = async (type) => {
         throw new ApiErr(500, "Error fetching categories by type: " + error.message)
     }
 }
+const getCategoryById = async (id) => {
+    try {
+        // Kiểm tra xem id có phải là ObjectId hợp lệ không
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new ApiErr(400, `Invalid category ID format ${id}` );
+        }
 
+        // Tìm danh mục theo ID
+        const category = await Category.findById(id);
+        if (!category) {
+            throw new ApiErr(404, "Category not found");
+        }
+        return category;
+    } catch (error) {
+        throw new ApiErr(500, "Error fetching category by ID: " + error.message);
+    }
+};
 const updateCategory = async (id,{  name, updatedBy, subcategories }, profile) => {
     try {
         const updated = await Category.findByIdAndUpdate(
@@ -97,5 +113,6 @@ export const categoryService = {
     deleteCategory,
     updateCategory,
     getCategories,
-    getCategoriesByType
+    getCategoriesByType,
+    getCategoryById
 }
