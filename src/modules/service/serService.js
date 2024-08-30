@@ -8,6 +8,7 @@ import {News, NewsDetail} from "~/models/newsModel";
 class SerService {
     async addService(data, file) {
         try {
+            console.log(file)
             const uploadedImage = await uploadSingleImageToCloudinary(file.path);
             const service = new ServiceModel(data);
             service.image = uploadedImage.secure_url

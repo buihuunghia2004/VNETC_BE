@@ -32,6 +32,8 @@ export const getServiceById = async (req, res, next) => {
 }
 export const updateService = async (req, res, next) => {
     try {
+        console.log(file)
+
         const id = req.params.id
         const data = req.body
         const file = req.file

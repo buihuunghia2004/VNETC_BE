@@ -60,19 +60,24 @@ class Page {
 
     async deletePage(slug) {
         try {
-            const result = await PageModel.findOneAndDelete({ slug });
+            const result = await PageModel.findOneAndDelete({slug});
             if (!result) throw new ApiErr(StatusCodes.NOT_FOUND, "Page not found");
 
             if (result.attachments) {
-                const filePath = path.join(__dirname, '..', result.attachments);
-                await fs.promises.unlink(filePath);
-                console.log("File deleted:", filePath);
+                const filePath = path.join(__dirname, '..', '..','..', 'uploads', path.basename(result.attachments));
+                try {
+                    await fs.promises.unlink(filePath);
+                    console.log("File deleted:", filePath);
+                } catch (unlinkError) {
+                    console.error("Failed to delete file:", unlinkError);
+                    // Optionally throw an error here if file deletion is critical
+                }
             }
 
             return result;
         } catch (error) {
             if (error instanceof ApiErr) throw error;
-            throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to delete page");
+            throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, error, "Failed to delete page");
         }
     }
 
