@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="" />
+    <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Changes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Changes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,7 +47,7 @@
   &quot;keyToString&quot;: {
     &quot;Node.js.ImageService.js.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dont&quot;,
     &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.13.1&quot;,
     &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.13.0&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/2024/Rectjs/ultimate-react-course/01-pure-react/start/pizza-menu&quot;,
@@ -165,6 +168,9 @@
       <workItem from="1724914707267" duration="292000" />
       <workItem from="1724915699784" duration="5662000" />
       <workItem from="1724932838764" duration="7859000" />
+      <workItem from="1725068988584" duration="17000" />
+      <workItem from="1725069019929" duration="35000" />
+      <workItem from="1725071134017" duration="1755000" />
     </task>
     <servers />
   </component>
