@@ -1,29 +1,34 @@
 import mongoose from "mongoose"
-import { Category } from "./categoryModel"
-import { Account, accountModel } from "./accountModel"
-const { Schema } = mongoose
+import {Category} from "./categoryModel"
+import {Account, accountModel} from "./accountModel"
+
+const {Schema} = mongoose
 
 const newsSchema = new Schema({
-    title:{
-        type:String,
-        required:true
+    title: {
+        type: String,
+        required: true
     },
-    summary:{
-        type:String,
-        required:true
+    summary: {
+        type: String,
+        required: true
     },
-    views:{
-        type:Number,
-        default:0
+    views: {
+        type: Number,
+        default: 0
     },
-    images:{
-        type:String,
-        required:true
+    isFeatured: {
+        type: Boolean,
+        default: false
     },
-    categoryId:{
-        type:Schema.Types.ObjectId,
-        required:true,
-        ref:'Category'
+    images: {
+        type: String,
+        required: true
+    },
+    categoryId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category'
     },
     createdBy: {
         type: String,
@@ -33,16 +38,16 @@ const newsSchema = new Schema({
         type: String,
         default: null
     },
-}, { timestamps: true })
+}, {timestamps: true})
 
 const newsDetailSchema = new Schema({
-    content:{
-        type:String,
-        required:true
+    content: {
+        type: String,
+        required: true
     },
-    newsId:{
-        type:Schema.Types.ObjectId,
-        ref:'News'
+    newsId: {
+        type: Schema.Types.ObjectId,
+        ref: 'News'
     },
     createdBy: {
         type: String,
@@ -52,7 +57,7 @@ const newsDetailSchema = new Schema({
         type: String,
         default: null
     },
-}, { timestamps: true })
+}, {timestamps: true})
 
 
 export const NewsDetail = mongoose.model('NewsDetail', newsDetailSchema)

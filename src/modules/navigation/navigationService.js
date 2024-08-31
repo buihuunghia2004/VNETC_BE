@@ -1,64 +1,171 @@
-import { StatusCodes } from "http-status-codes"
-import { Account } from "~/models/accountModel"
-import { navigationModel } from "~/models/navigationModel"
+import {StatusCodes} from "http-status-codes"
+import {ChildNav, ParentNav} from "~/models/navigationModel"
 import ApiErr from "~/utils/ApiError"
-import { NAVIGATION as NAV } from "~/utils/appConst"
+import {NAVIGATION as NAV} from "~/utils/appConst"
 import slugify from "~/utils/stringToSlug"
 
-const getAllNavigation = async (data) => {
-  const parentNavs = await ParentNav.find({}, { title: 1 })
-  const childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1 })
+const buildChildTree = async (parentId) => {
+    const childNavs = await ChildNav.find({ parentNavId: parentId }).lean();
+    if (!childNavs.length) return [];
+    return Promise.all(childNavs.map(async (child) => ({
+        ...child,
+        child: await buildChildTree(child._id)
+    })));
+};
 
-  parentNavs = parentNavs._doc
-  childNavs = childNavs._doc
+const getAllNavigation = async () => {
+    const parentNavs = await ParentNav.find({}, { title: 1, slug: 1 }).lean();
+    const childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1, slug: 1 }).lean();
 
-  parentNavs = parentNavs.map((parent) => {
-    childNavs.forEach((child) => {
-      let childs = []
-      if (parent._id.toString() == child.parentNavId.toString()) {
-        childs.push(child)
-      }
-      return { ...parent, childs }
-    })
-  })
+    const buildTree = (navItems, parentId) => {
+        return navItems
+            .filter(nav => nav.parentNavId.toString() === parentId.toString())
+            .map(nav => ({
+                ...nav,
+                child: buildTree(navItems, nav._id)
+            }));
+    };
 
-  return parentNavs
-}
+    return parentNavs.map(parent => ({
+        ...parent,
+        childs: buildTree(childNavs, parent._id)
+    }));
+};
 
-const getNaigation = async (data) => {
-  let navs
-  if (type == PARENT) {
-    navs = ParentNav.find({}, { title: 1 })
-  } else {
-    navs = ChildNav.find(
-      { parentNavId: data.parentNavId },
-      { title: 1, parentNavId: 1 }
-    )
-  }
-  return navs
-}
+const getNavigationBySlug = async (slug) => {
+    const parentNav = await ParentNav.findOne({ slug }, { title: 1 }).lean();
+    if (!parentNav) {
+        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found");
+    }
 
-const addNavigation = async (data, accountId) => {
-  const account = await Account.findById(accountId)
-  if (!account) {
-    throw new ApiErr(StatusCodes.NOT_FOUND, "Add fail")
-  }
+    const childNavs = await ChildNav.find({ parentNavId: parentNav._id.toString() }, { title: 1 }).lean();
+    if (!childNavs.length) {
+        throw new ApiErr(StatusCodes.NOT_FOUND, "Child navigations not found");
+    }
 
-  data.createdBy = account.fullName
-  data.slug = slugify(data.title)
-  console.log(data)
-  const newNav = await navigationModel.addNavigation({ data })
-  return newNav
-}
+    return { ...parentNav, childs: childNavs };
+};
 
-const updateNaigation = async (data) => {}
+const getNavigationById = async (id) => {
+    // Tìm mục điều hướng cha theo ID
+    const parentNav = await ParentNav.findById(id).lean();
 
-const deleteNaigation = async (data) => {}
+    if (parentNav) {
+        // Nếu tìm thấy mục điều hướng cha, tìm tất cả các mục điều hướng con của mục cha
+        const childTree = await buildChildTree(parentNav._id);
+        return { ...parentNav, childs: childTree };
+    }
+
+    // Nếu không tìm thấy mục điều hướng cha, kiểm tra mục điều hướng con
+    const childNav = await ChildNav.findById(id).lean();
+    if (!childNav) {
+        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found");
+    }
+
+    // Đệ quy để tìm các mục điều hướng con của mục điều hướng con này
+    const childTree = await buildChildTree(childNav._id);
+    return { ...childNav, child: childTree };
+};
+
+const addNavigation = async (data, creator) => {
+    const { type, title, parentNavId } = data;
+    const slug = slugify(title);
+
+    if (type === NAV.PARENT) {
+        const navExists = await ParentNav.exists({ title });
+        if (navExists) {
+            throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists!");
+        }
+
+        const nav = new ParentNav({ title, slug, createdBy: creator });
+        return await nav.save();
+    } else {
+        const [parentNavExists, childNavExists] = await Promise.all([
+            ParentNav.exists({ _id: parentNavId }),
+            ChildNav.exists({ parentNavId, title })
+        ]);
+
+        // if (!parentNavExists && childNavExists) {
+        //     throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found!");
+        // }
+        //
+        // if (childNavExists) {
+        //     throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists");
+        // }
+
+        const nav = new ChildNav({ title, parentNavId, slug, createdBy: creator });
+        return await nav.save();
+    }
+};
+
+const updateNavigation = async (id, data, updater) => {
+    const { type, title, parentNavId } = data;
+    let nav;
+
+    if (type === NAV.PARENT) {
+        nav = await ParentNav.findById(id);
+        if (!nav) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found");
+        }
+
+        if (title && title !== nav.title) {
+            const navExists = await ParentNav.exists({ title });
+            if (navExists) {
+                throw new ApiErr(StatusCodes.CONFLICT, "Navigation with this title already exists");
+            }
+        }
+
+        if (title) {
+            nav.title = title;
+            nav.slug = slugify(title);
+        }
+        nav.updatedBy = updater;
+        await nav.save();
+    } else {
+        nav = await ChildNav.findById(id);
+        if (!nav) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Child navigation not found");
+        }
+
+        if (title && title !== nav.title) {
+            const childNavExists = await ChildNav.exists({
+                title,
+                _id: { $ne: id }
+            });
+            if (childNavExists) {
+                throw new ApiErr(StatusCodes.CONFLICT, "Child navigation with this title already exists");
+            }
+        }
+
+        if (title) {
+            nav.title = title;
+            nav.slug = slugify(title);
+        }
+        nav.updatedBy = updater;
+        await nav.save();
+    }
+
+    return nav;
+};
+
+const deleteNavigation = async (data) => {
+    const { type, id } = data;
+    const deleted = type === NAV.PARENT
+        ? await ParentNav.findByIdAndDelete(id)
+        : await ChildNav.findByIdAndDelete(id);
+
+    if (!deleted) {
+        throw new ApiErr(StatusCodes.NOT_FOUND, "Delete failed");
+    }
+
+    return deleted;
+};
 
 export const navigationService = {
-  getAllNavigation,
-  getNaigation,
-  addNavigation,
-  deleteNaigation,
-  updateNaigation,
-}
+    getAllNavigation,
+    getNavigationBySlug,
+    getNavigationById,
+    addNavigation,
+    updateNavigation,
+    deleteNavigation
+};

@@ -1,24 +1,40 @@
-import { populate } from "dotenv"
+import {populate} from "dotenv"
 import mongoose from "mongoose"
-const { Schema } = mongoose
+import {number} from "joi";
+
+const {Schema} = mongoose
 
 const memberSchema = new Schema({
-    name:{
-        type:String,
-        required:true
+    name: {
+        type: String,
+        required: true
     },
-    position:{
-        type:String,
-        default:null
+    position: {
+        type: Number,
+        enum: [0, 1, 2],
+        default: 1,
+        required: true
     },
-    images:{
-        type:String,
-        default:null
+    yearOfBirth: {
+        type: Number,
+        require: true
     },
-    departmentId:{
-        type:Schema.Types.ObjectId,
-        ref:'Department',
-        default:null
+    qualification: {
+        type: String,
+        require: true
+    },
+    seniority: {
+        type: Number,
+        require: true
+    },
+    image: {
+        type: String,
+        default: null
+    },
+    departmentId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Department',
+        default: null
     },
     createdBy: {
         type: String,
@@ -28,6 +44,6 @@ const memberSchema = new Schema({
         type: String,
         default: null
     },
-}, { timestamps: true })
+}, {timestamps: true})
 
 export const Member = mongoose.model('Member', memberSchema)

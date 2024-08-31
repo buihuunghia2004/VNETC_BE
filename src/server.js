@@ -4,56 +4,58 @@ import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import mongoose from 'mongoose'
 import http from 'http'
-import { env } from './config/environment'
-import { errorHandlingMiddleWare } from './middlewares/errorHandlingMiddleWare'
+import {Server} from 'socket.io'
+import {env} from './config/environment'
 import initApis from './routes/api'
-
+import {setupSocketIO} from './modules/socketService'
+import {connectToDatabase} from './config/mongodb'
+import {errorHandlingMiddleWare} from "~/middlewares/errorHandlingMiddleWare";
+import path from 'path';
+import * as fs from 'fs';
+import https from 'https';
 const app = express()
-const server = http.createServer(app,()=>{
-  const clientIP = req.connection.remoteAddress;
-  console.log('Client IP:', clientIP);
-})
-const io = require('socket.io')(server,{
-  cors: {
-    origin: '*'
-  }
+
+
+const privateKey = fs.readFileSync('privkey.pem')
+const certificate = fs.readFileSync('fullchain.pem')
+const credentials = { key: privateKey, cert: certificate }
+
+// Create HTTPS server
+const server = https.createServer(credentials, app)
+
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
 })
 
-app.use(cors())
+// Middleware
+app.use(express.urlencoded({extended: true}))
+app.use(express.json())
+app.use(cors({credentials:true}))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
+// Thiết lập đường dẫn tĩnh cho thư mục 'uploads'
+app.use('/uploads', express.static(path.join(__dirname,'..', 'uploads')));
 
+// Database connection
+connectToDatabase()
 
-mongoose.connect(env.MONGODB_URI)
-const db = mongoose.connection
-db.on('error', console.error.bind(console, 'connection error:'))
-db.once('open', () => {
-    console.log('Connected to MongoDB')
-});
+// Socket.IO setup
+setupSocketIO(io)
 
-let onlineUser = 0;
-io.on('connection', (socket) => {
-
-  onlineUser+=1
-  console.log(onlineUser)
-
-  socket.on('disconnect', () => {
-      // onlineUsers--;
-      onlineUser-=1
-      console.log(onlineUser);
-  });
-});
-
-// Cho phép lý dữ liệu từ form method POST
-app.use(express.urlencoded({extended: true}));
-
-//Khởi tạo các routes
+// Routes
 initApis(app)
 
-//middleware error handler
+// Error handling
 app.use(errorHandlingMiddleWare)
 
+// Start server
+const startServer = () => {
+    server.listen(443, () => {
+        console.log(`Server running at: http://localhost:443/`)
+    })
+}
 
-server.listen(env.PORT, () => {
-  console.log(`Server running at:${ env.PORT }/`)
-})
+startServer()

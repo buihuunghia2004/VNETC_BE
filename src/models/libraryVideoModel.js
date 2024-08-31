@@ -1,10 +1,11 @@
 import mongoose from "mongoose"
-const { Schema } = mongoose
+
+const {Schema} = mongoose
 
 const libraryVideoSchema = new Schema({
-    video:{
-        type:String,
-        required:true
+    video: {
+        type: String,
+        required: true
     },
     createdBy: {
         type: String,
@@ -12,8 +13,8 @@ const libraryVideoSchema = new Schema({
     },
     updatedBy: {
         type: String,
-        required: true
+        default: null
     },
-}, { timestamps: true })
+}, {timestamps: true})
 
 export const LibraryVideo = mongoose.model('LibraryVideo', libraryVideoSchema)

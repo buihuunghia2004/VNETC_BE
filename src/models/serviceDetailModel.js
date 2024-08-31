@@ -1,14 +1,15 @@
 import mongoose from "mongoose"
-const { Schema } = mongoose
+
+const {Schema} = mongoose
 
 const serviceDetailSchema = new Schema({
-    content:{
-        type:String,
-        required:true
+    content: {
+        type: String,
+        required: true
     },
-    serviceId:{
-        type:Schema.Types.ObjectId,
-        ref:'Service'
+    serviceId: {
+        type: Schema.Types.ObjectId,
+        ref: 'ServiceModel'
     },
     createdBy: {
         type: String,
@@ -16,8 +17,8 @@ const serviceDetailSchema = new Schema({
     },
     updatedBy: {
         type: String,
-        required: true
+        default: null
     },
-}, { timestamps: true })
+}, {timestamps: true})
 
-export const ServiceDetail = mongoose.model('ServiceDetail', serviceDetailSchema)
+export const ServiceDetailModel = mongoose.model('ServiceDetail', serviceDetailSchema)

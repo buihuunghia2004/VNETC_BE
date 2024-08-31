@@ -9,6 +9,6 @@ Router.route('/:id')
 
 Router.route('/')
     .post(isAuth,upload.single('image'), controll.create)
-    .get(isAuth,controll.getAll)
+    .get(controll.getAll)
 
 export const partnerRoute = Router

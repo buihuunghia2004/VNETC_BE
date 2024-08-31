@@ -19,8 +19,8 @@ const getMessage = async (req, res, next) => {
 }
 const deleteMessage = async (req, res, next) => {
     try {
-       // const sended = await contactService.sendMessage(req.body)
-        SuccessRes(res, sended, 'Send message succesful')
+       const sended = await contactService.deleteMessage(req.params.id)
+        SuccessRes(res, sended, 'Delete message succesful')
     } catch (error) {
         next(error)
     }
