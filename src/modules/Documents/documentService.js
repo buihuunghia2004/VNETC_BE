@@ -1,145 +1,149 @@
-import ApiErr from "~/utils/ApiError";
-import {StatusCodes} from "http-status-codes";
-import {DocumentModel} from "~/models/documentModel";
-import fs from 'fs';
-import { promisify } from 'util';
+import ApiErr from "~/utils/ApiError"
+import { StatusCodes } from "http-status-codes"
+import { DocumentModel } from "~/models/documentModel"
+import fs from "fs"
+import { promisify } from "util"
+import * as path from "node:path"
+
 const unlinkAsync = promisify(fs.unlink)
-class docService {
-    async addDoc(data, files) {
-        const attachments = files.map(file => {
-            let fileType;
-            if (file.mimetype === 'application/pdf') {
-                fileType = 'pdf';
-            } else if (file.mimetype.startsWith('image/')) {
-                fileType = 'img';
-            } else {
-                fileType = 'other'; // Nếu có loại file khác không xác định
-            }
 
-            return {
-                filename: file.originalname,
-                file_type: fileType,
-                file_url: file.path
-            };
-        });
+class DocService {
+  async addDoc(data, files) {
+    const attachments = files.map((file) => {
+      let fileType
 
+      if (file.mimetype === "application/pdf") {
+        fileType = "pdf"
+      } else if (file.mimetype.startsWith("image/")) {
+        fileType = "img"
+      } else {
+        fileType = "other"
+      }
 
-        const doc = new DocumentModel({
-            ...data,
-            createdBy: 'admin',
-            attachments: attachments
-        });
+      return {
+        filename: file.originalname,
+        file_type: fileType,
+        file_url: file.path,
+      }
+    })
 
-        await doc.save();
-        return doc;
+    const doc = new DocumentModel({
+      ...data,
+      createdBy: "admin",
+      attachments,
+    })
+
+    await doc.save()
+    return doc
+  }
+
+  async getDoc(query) {
+    const { page, limit, type } = query
+    const filter = {}
+
+    if (type) {
+      filter.type = type
     }
 
-    async getDoc(data) {
-        const { page, limit, type } = data;
-        const query = {};
+    const docs = await DocumentModel.find(filter)
+      .skip(limit * (page - 1))
+      .limit(limit)
+      .sort({ createdAt: -1 })
 
-        if (type) {
-            query.type = type;
-        }
+    return docs
+  }
 
-        const docs = await DocumentModel.find(query)
-            .skip(limit * (page - 1))
-            .limit(limit)
-            .sort({ createdAt: -1 });
+  async getDocById(id) {
+    const doc = await DocumentModel.findById(id)
+    if (!doc) {
+      throw new ApiErr(StatusCodes.NOT_FOUND, "Document not found")
+    }
+    return doc
+  }
 
-        return docs;
+  async updateDoc(id, data, files) {
+    const doc = await DocumentModel.findById(id)
+    if (!doc) {
+      throw new ApiErr(StatusCodes.NOT_FOUND, "Document not found")
     }
 
+    Object.assign(doc, data)
 
-    async getDocById(id) {
-        const doc = await DocumentModel.findById(id);
-        if (!doc) {
-            throw new ApiErr(StatusCodes.NOT_FOUND, "Document not found");
+    if (files && files.length > 0) {
+      // Xóa các tệp cũ cùng loại trước khi thêm tệp mới
+      const fileTypesToDelete = new Set(
+        files.map((file) => this.getFileType(file.mimetype))
+      )
+
+      for (const fileType of fileTypesToDelete) {
+        await this.deleteAttachmentsByType(doc, fileType)
+      }
+
+      // Thêm các tệp mới
+      for (const file of files) {
+        const fileType = this.getFileType(file.mimetype)
+        const newAttachment = {
+          filename: file.originalname,
+          file_type: fileType,
+          file_url: file.path,
         }
-        return doc;
+
+        doc.attachments = doc.attachments.filter(
+          (attachment) => attachment.file_type !== fileType
+        )
+        doc.attachments.push(newAttachment)
+      }
     }
 
-    async updateDoc(id, data, files) {
-        const doc = await DocumentModel.findById(id);
-        if (!doc) {
-            throw new ApiErr(StatusCodes.NOT_FOUND, "Document not found");
-        }
+    doc.updatedBy = "admin"
+    await doc.save()
+    return doc
+  }
 
-        // Update the document data
-        Object.assign(doc, data);
-
-        // Handle new file attachments
-        if (files && files.length > 0) {
-            // Create a map to keep track of the updated attachments
-            const updatedAttachmentsMap = new Map();
-
-            // Update or add new attachments
-            await Promise.all(
-                files.map(async (file) => {
-                    let fileType;
-                    if (file.mimetype === 'application/pdf') {
-                        fileType = 'pdf';
-                    } else if (file.mimetype.startsWith('image/')) {
-                        fileType = 'img';
-                    } else {
-                        fileType = 'other';
-                    }
-
-                    const attachment = {
-                        filename: file.originalname,
-                        file_type: fileType,
-                        file_url: file.path,
-                    };
-
-                    // Check if the attachment already exists
-                    const existingAttachment = doc.attachments.find((a) =>
-                        a.file_type === fileType && a.filename === attachment.filename
-                    );
-
-                    if (existingAttachment) {
-                        // Update the existing attachment
-                        Object.assign(existingAttachment, attachment);
-                    } else {
-                        // Add a new attachment
-                        doc.attachments.push(attachment);
-                    }
-
-                    updatedAttachmentsMap.set(`${fileType}:${attachment.filename}`, attachment);
-                })
-            );
-
-            // Remove the attachments that are not in the updatedAttachmentsMap
-            doc.attachments = doc.attachments.filter((attachment) =>
-                updatedAttachmentsMap.has(`${attachment.file_type}:${attachment.filename}`)
-            ).map((attachment) => updatedAttachmentsMap.get(`${attachment.file_type}:${attachment.filename}`));
-        }
-
-        doc.updatedBy = 'admin';
-        await doc.save();
-        return doc;
+  async deleteDoc(id) {
+    const doc = await DocumentModel.findByIdAndDelete(id)
+    if (!doc) {
+      throw new ApiErr(StatusCodes.NOT_FOUND, "Document not found")
     }
-    async deleteDoc(id) {
-        const doc = await DocumentModel.findByIdAndDelete(id);
 
-        if (!doc) {
-            throw new ApiErr(StatusCodes.NOT_FOUND, "Document not found");
+    // Xóa tất cả các file đính kèm
+    await Promise.all(
+      doc.attachments.map(async (attachment) => {
+        try {
+          await unlinkAsync(
+            path.join(__dirname, "..", "..", "..", attachment.file_url)
+          )
+        } catch (err) {
+          console.error(`Failed to delete file: ${attachment.file_url}`, err)
         }
+      })
+    )
 
-        // Xóa tất cả các file đính kèm
-        const deleteFilesPromises = doc.attachments.map(async (attachment) => {
-            try {
-                await unlinkAsync(attachment.file_url);
-            } catch (err) {
-                console.error(`Failed to delete file: ${attachment.file_url}`, err);
-            }
-        });
+    return { message: "Document and attached files deleted successfully" }
+  }
 
-        await Promise.all(deleteFilesPromises);
+  getFileType(mimetype) {
+    if (mimetype === "application/pdf") return "pdf"
+    if (mimetype.startsWith("image/")) return "img"
+    return "other"
+  }
 
-        return { message: "Document and attached files deleted successfully" };
+  async deleteAttachmentsByType(doc, fileType) {
+    const attachmentsToDelete = doc.attachments.filter(
+      (attachment) => attachment.file_type === fileType
+    )
+
+    for (const attachment of attachmentsToDelete) {
+      try {
+        await unlinkAsync(
+          path.join(__dirname, "..", "..", "..", attachment.file_url)
+        )
+      } catch (err) {
+        console.error(`Failed to delete old file: ${attachment.file_url}`, err)
+      }
     }
+  }
 }
 
-const documentService = new docService();
-
-export default documentService;
+const documentService = new DocService()
+export default documentService
