@@ -4,14 +4,16 @@ import ApiErr from "~/utils/ApiError";
 import {StatusCodes} from "http-status-codes";
 import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage";
 import {News, NewsDetail} from "~/models/newsModel";
+import uploadImageToCloudinary from "~/utils/uploadImage";
 
 class SerService {
     async addService(data, file) {
         try {
             console.log(file)
-            const uploadedImage = await uploadSingleImageToCloudinary(file.path);
+            const uploadedImage = await uploadImageToCloudinary(file);
+            console.log(uploadedImage)
             const service = new ServiceModel(data);
-            service.image = uploadedImage.secure_url
+            service.image = uploadedImage
             await service.save();
 
             const newOrder = new ServiceDetailModel({
@@ -44,7 +46,7 @@ class SerService {
                 return { message: "No services found" };
             }
 
-            return service;
+            return {service, type: "isService"};
         } catch (e) {
             console.error("Error fetching services:", e.message); // Ghi log lỗi
             throw new Error("An error occurred while fetching services"); // Thông báo lỗi cụ thể hơn
@@ -70,8 +72,9 @@ class SerService {
             // Xử lý việc upload file nếu có
             let imageUrl;
             if (file) {
-                const uploadedImage = await uploadSingleImageToCloudinary(file.path);
-                imageUrl = uploadedImage.secure_url;
+                const uploadedImage = await uploadImageToCloudinary(file);
+                console.log(uploadedImage)
+                imageUrl = uploadedImage;
             }
 
             // Cập nhật service
@@ -132,7 +135,7 @@ class SerService {
                 ...service,
                 content: serviceDetails.content // Ensure content is included
             };
-            return data;
+            return {data, type: "isService"};
         } catch (e) {
             throw e;
         }
@@ -143,7 +146,7 @@ class SerService {
             const data = await ServiceModel.find()
                 .limit(8)
                 .sort({views: -1});
-            return data
+            return {data, type: "isService"}
         } catch (e) {
             throw e
         }
@@ -151,7 +154,8 @@ class SerService {
 
     async getFeatured() {
         try {
-            return await ServiceModel.find({isFeatured: true}).limit(5).sort({createdAt: -1})
+            const data = await ServiceModel.find({isFeatured: true}).limit(5).sort({createdAt: -1})
+            return {data, type: "isService"}
         } catch (e) {
             throw e
         }
@@ -179,7 +183,8 @@ class SerService {
                 };
             });
             return {
-                results: fullResults, totalCount, totalPages: Math.ceil(totalCount / limit), currentPage: page
+                results: fullResults, totalCount, totalPages: Math.ceil(totalCount / limit), currentPage: page,
+                type: "isService"
             };
         } catch (error) {
             console.error("Error searching :", error);

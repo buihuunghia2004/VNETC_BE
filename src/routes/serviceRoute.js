@@ -10,12 +10,12 @@ import {
 } from "~/modules/service/serviceController";
 
 const Service = Router()
-Service.post("/", isAuth, upload.single("image"), addService)
+Service.post("/", isAuth, upload.array("image"), addService)
 Service.get("/", getService)
 Service.get("/views", getByTopViews)
 Service.get("/featured", getByFeatured)
 Service.get("/search", search)
 Service.get('/:id', getServiceById)
-Service.patch('/:id', isAuth, upload.single("image"), updateService)
+Service.patch('/:id', isAuth, upload.array("image"), updateService)
 Service.delete("/:id", isAuth, deleteService)
 export const ServiceRoute = Service

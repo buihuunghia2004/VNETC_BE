@@ -5,8 +5,8 @@ import {newsService} from "~/modules/news/newsService";
 
 export const addService = async (req, res, next) => {
     try {
-        const {body: data, file} = await req
-        const result = await Service.addService(data, file)
+        const {body: data, files} = await req
+        const result = await Service.addService(data, files)
         SuccessRes(res, result, "Create new Service success")
     } catch (error) {
         next(error)
@@ -32,11 +32,11 @@ export const getServiceById = async (req, res, next) => {
 }
 export const updateService = async (req, res, next) => {
     try {
-        console.log(file)
 
         const id = req.params.id
         const data = req.body
-        const file = req.file
+        const file = req.files
+        console.log(file)
         const result = await Service.updateService(id, data, file)
         SuccessRes(res, result, "Update Service success")
     } catch (e) {

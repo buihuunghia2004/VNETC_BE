@@ -45,7 +45,7 @@ const getAll = async (data) => {
         .skip(limit * (page - 1))
         .limit(limit)
         .sort({createdAt: -1});
-    return products
+    return {products, type: "isProduct"}
 }
 const updateProduct = async (id, accountName, data, imageData) => {
     try {
@@ -135,7 +135,7 @@ const getProductById = async (id) => {
             detail: formattedDetails,
         };
 
-        return result;
+        return {result, type: 'isProduct'};
     } catch (error) {
         console.error('Error fetching product by ID:', error);
         throw error;
@@ -234,6 +234,7 @@ const searchProducts = async (searchTerm, page, limit) => {
         return {
             products: productsWithDetails,
             currentPage: page,
+            type:'isProduct',
             totalPages,
             totalCount
         };
