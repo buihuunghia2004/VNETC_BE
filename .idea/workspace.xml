@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/serviceDetailModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/serviceDetailModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/serviceModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/serviceModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modules/service/serService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/service/serService.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/service/serviceController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/service/serviceController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/serviceRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/serviceRoute.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/uploadImage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/uploadImage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +171,7 @@
       <workItem from="1724915699784" duration="5662000" />
       <workItem from="1724932838764" duration="7859000" />
       <workItem from="1725593263936" duration="378000" />
-      <workItem from="1725594476341" duration="7058000" />
+      <workItem from="1725594476341" duration="8788000" />
     </task>
     <servers />
   </component>
@@ -206,6 +205,12 @@
           <url>file://$PROJECT_DIR$/src/models/documentModel.js</url>
           <line>46</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/modules/service/serService.js</url>
+          <line>9</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

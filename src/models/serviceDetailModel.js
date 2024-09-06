@@ -7,6 +7,15 @@ const serviceDetailSchema = new Schema({
         type: String,
         required: true
     },
+    brand: {
+        type: String,
+        default: ''
+    }, //thương hiệu
+    model: {
+        type: String,
+        default: ''
+    }, //công suất
+    // species:String,
     serviceId: {
         type: Schema.Types.ObjectId,
         ref: 'ServiceModel'

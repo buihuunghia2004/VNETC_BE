@@ -16,14 +16,16 @@ class SerService {
             service.image = uploadedImage
             await service.save();
 
-            const newOrder = new ServiceDetailModel({
+            const newServiceDetail = new ServiceDetailModel({
                 serviceId: service._id,
                 content: data.content,
+                brand: data.brand,
+                model: data.model,
                 createdBy: data.createdBy
             });
-            await newOrder.save();
+            await newServiceDetail.save();
 
-            return [service, newOrder];
+            return [service, newServiceDetail];
         } catch (e) {
             throw e;
         }
@@ -69,7 +71,6 @@ class SerService {
 
     async updateService(serviceId, data, file) {
         try {
-            // Xử lý việc upload file nếu có
             let imageUrl;
             if (file) {
                 const uploadedImage = await uploadImageToCloudinary(file);
@@ -77,7 +78,6 @@ class SerService {
                 imageUrl = uploadedImage;
             }
 
-            // Cập nhật service
             const serviceUpdateData = {
                 name: data.name,
                 description: data.description,
@@ -89,24 +89,25 @@ class SerService {
 
             const service = await ServiceModel.findByIdAndUpdate(
                 serviceId,
-                {$set: serviceUpdateData},
-                {new: true, runValidators: true}
+                { $set: serviceUpdateData },
+                { new: true, runValidators: true }
             );
 
             if (!service) {
                 throw new Error('Không tìm thấy dịch vụ');
             }
 
-            // Cập nhật hoặc tạo mới serviceDetail
             const serviceDetailUpdateData = {
                 content: data.content,
-                createdBy: data.createdBy,
+                brand: data.brand,
+                model: data.model,
+                updatedBy: data.updatedBy,
             };
 
             const serviceDetail = await ServiceDetailModel.findOneAndUpdate(
-                {serviceId: service._id},
-                {$set: serviceDetailUpdateData},
-                {new: true, upsert: true, runValidators: true}
+                { serviceId: service._id },
+                { $set: serviceDetailUpdateData },
+                { new: true, upsert: true, runValidators: true }
             );
 
             return [service, serviceDetail];
@@ -118,24 +119,24 @@ class SerService {
 
     async getServiceById(serviceId) {
         try {
-            const service = await
-                ServiceModel.findByIdAndUpdate(
-                    serviceId,
-                    {$inc: {views: 1}},
-                    {new: true, lean: true});
+            const service = await ServiceModel.findByIdAndUpdate(
+                serviceId,
+                { $inc: { views: 1 } },
+                { new: true, lean: true }
+            );
             if (!service) {
                 throw new ApiErr(StatusCodes.BAD_REQUEST, "Service detail not found");
             }
 
-            const serviceDetails = await ServiceDetailModel.findOne({serviceId: serviceId});
+            const serviceDetails = await ServiceDetailModel.findOne({ serviceId: serviceId });
             if (!serviceDetails) {
                 throw new ApiErr(StatusCodes.BAD_REQUEST, "Service details not found");
             }
             const data = {
                 ...service,
-                content: serviceDetails.content // Ensure content is included
+                ...serviceDetails.toObject()
             };
-            return {data, type: "isService"};
+            return { data, type: "isService" };
         } catch (e) {
             throw e;
         }
