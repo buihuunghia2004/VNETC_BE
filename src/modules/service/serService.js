@@ -72,20 +72,28 @@ class SerService {
     async updateService(serviceId, data, file) {
         try {
             let imageUrl;
-            if (file) {
-                const uploadedImage = await uploadImageToCloudinary(file);
-                console.log(uploadedImage)
-                imageUrl = uploadedImage;
-            }
-
             const serviceUpdateData = {
                 name: data.name,
                 description: data.description,
             };
-
-            if (imageUrl) {
+            if (file) {
+                const uploadedImage = await uploadImageToCloudinary(file);
+                console.log(uploadedImage)
+                imageUrl = uploadedImage;
                 serviceUpdateData.image = imageUrl;
+            } 
+            if (data.image) {
+                if (Array.isArray(data.image)) {
+                    serviceUpdateData.image = [...data.image];
+                } else if (typeof data.image === 'string') {
+                    serviceUpdateData.image = [data.image]; 
+                }
             }
+            
+
+
+
+
 
             const service = await ServiceModel.findByIdAndUpdate(
                 serviceId,
