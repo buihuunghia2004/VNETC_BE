@@ -39,6 +39,12 @@ const serviceSchema = new Schema({
         required: true,
         ref: 'Category'
     },
-}, {timestamps: true})
+    type: {
+        type: String,
+        enum: ['isProduct', 'isService'], 
+        required: true, 
+        default: 'isService' 
+    }
+}, { timestamps: true });
 
-export const ServiceModel = mongoose.model('Service', serviceSchema)
+export const ServiceModel = mongoose.model('Service', serviceSchema);
