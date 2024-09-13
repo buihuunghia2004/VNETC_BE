@@ -1,7 +1,7 @@
 import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage";
 import ApiErr from "~/utils/ApiError";
 import { StatusCodes } from "http-status-codes";
-import { io } from "~/server";
+import { io } from "../../server";
 import { Category } from "~/models/categoryModel";
 import { Actions, ActionDetail } from "~/models/actionModel";
 

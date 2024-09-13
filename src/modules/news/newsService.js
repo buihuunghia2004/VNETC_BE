@@ -3,7 +3,7 @@ import {body} from "express-validator";
 import {log} from "console";
 import ApiErr from "~/utils/ApiError";
 import {StatusCodes} from "http-status-codes";
-import {io} from "~/server";
+import {io} from "../../server";
 
 const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")

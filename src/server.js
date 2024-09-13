@@ -5,10 +5,10 @@ import morgan from 'morgan'
 import mongoose from 'mongoose'
 import http from 'http'
 import {Server} from 'socket.io'
-import {env} from './config/environment'
-import initApis from './routes/api'
-import {setupSocketIO} from './modules/socketService'
-import {connectToDatabase} from './config/mongodb'
+import {env} from '~/config/environment'
+import initApis from '~/routes/api'
+import {setupSocketIO} from '~/modules/socketService'
+import {connectToDatabase} from '~/config/mongodb'
 import {errorHandlingMiddleWare} from "~/middlewares/errorHandlingMiddleWare";
 import path from 'path';
 const app = express()
