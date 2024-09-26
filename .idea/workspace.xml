@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="" />
+    <list default="true" id="a21d142c-c3ce-490f-95ea-16675115f16d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modules/news/newsService.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/news/newsService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/uploadSingleImage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/uploadSingleImage.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,6 +49,7 @@
   &quot;keyToString&quot;: {
     &quot;Node.js.ImageService.js.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.13.1&quot;,
     &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.13.0&quot;,
@@ -172,7 +178,17 @@
       <workItem from="1725799369394" duration="2560000" />
       <workItem from="1725845459178" duration="1192000" />
       <workItem from="1725847878386" duration="3052000" />
-      <workItem from="1726193531609" duration="338000" />
+      <workItem from="1726193531609" duration="676000" />
+      <workItem from="1726279819488" duration="363000" />
+      <workItem from="1726650100964" duration="710000" />
+      <workItem from="1726708113189" duration="548000" />
+      <workItem from="1726803447063" duration="4675000" />
+      <workItem from="1726884212492" duration="6302000" />
+      <workItem from="1727052100879" duration="2832000" />
+      <workItem from="1727150000014" duration="1297000" />
+      <workItem from="1727225453195" duration="593000" />
+      <workItem from="1727252894055" duration="1782000" />
+      <workItem from="1727319421465" duration="3171000" />
     </task>
     <servers />
   </component>
